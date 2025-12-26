@@ -1,0 +1,29 @@
+services:
+  later-db:
+    image: postgres:16-alpine
+    container_name: later-db
+    environment:
+      POSTGRES_DB: later
+      POSTGRES_USER: later
+      POSTGRES_PASSWORD: later
+    ports:
+      - "5432:5432"
+    volumes:
+      - later-db-data:/var/lib/postgresql/data
+
+  later-app:
+    build: .
+    container_name: later-app
+    ports:
+      - "8085:8085"
+    depends_on:
+      - later-db
+    environment:
+      SERVER_PORT: 8085
+      SPRING_DATASOURCE_URL: jdbc:postgresql://later-db:5432/later
+      SPRING_DATASOURCE_USERNAME: later
+      SPRING_DATASOURCE_PASSWORD: later
+
+volumes:
+  later-db-data:
+    
