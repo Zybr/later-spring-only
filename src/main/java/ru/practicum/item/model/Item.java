@@ -9,9 +9,9 @@ import lombok.Data;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "user_id")
-    private long userId;
+    private Long userId;
     @Column(name = "url")
     private String url;
 }
