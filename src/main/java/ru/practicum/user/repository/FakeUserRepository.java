@@ -1,7 +1,8 @@
-package ru.practicum.user;
+package ru.practicum.user.repository;
 
 import com.github.javafaker.Faker;
 import org.springframework.stereotype.Repository;
+import ru.practicum.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,11 @@ public class FakeUserRepository implements UserRepository {
     }
 
     private User makeUser() {
-        return new User(
-                faker.number().randomNumber(),
-                faker.internet().emailAddress(),
-                faker.name().fullName()
-        );
+        return User.builder()
+                .id(faker.number().randomNumber())
+                .email(faker.internet().emailAddress())
+                .name(faker.name().fullName())
+                .build();
     }
 
     private void fillUsers(int size) {

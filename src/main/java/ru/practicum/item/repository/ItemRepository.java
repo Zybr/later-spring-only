@@ -1,6 +1,7 @@
-package ru.practicum.item;
+package ru.practicum.item.repository;
 
 import ru.practicum.exception.http.NotFoundException;
+import ru.practicum.item.model.Item;
 
 import java.util.List;
 

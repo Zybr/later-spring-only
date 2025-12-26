@@ -1,7 +1,9 @@
-package ru.practicum.user;
+package ru.practicum.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 
 import java.util.List;
 

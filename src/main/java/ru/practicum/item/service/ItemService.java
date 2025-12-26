@@ -1,4 +1,6 @@
-package ru.practicum.item;
+package ru.practicum.item.service;
+
+import ru.practicum.item.model.Item;
 
 import java.util.List;
 

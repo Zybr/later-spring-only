@@ -1,7 +1,9 @@
-package ru.practicum.user;
+package ru.practicum.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.user.service.UserService;
+import ru.practicum.user.model.User;
 
 import java.util.List;
 

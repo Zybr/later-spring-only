@@ -1,7 +1,9 @@
-package ru.practicum.item;
+package ru.practicum.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.item.model.Item;
+import ru.practicum.item.repository.ItemRepository;
 
 import java.util.List;
 
