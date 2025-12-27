@@ -27,8 +27,8 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].name").value("User One"))
-                .andExpect(jsonPath("$[1].name").value("User Two"));
+                .andExpect(jsonPath("$[0].name").value("User 1"))
+                .andExpect(jsonPath("$[1].name").value("User 2"));
     }
 
     @Test

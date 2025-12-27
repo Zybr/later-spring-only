@@ -19,6 +19,8 @@ CREATE TABLE items (
   has_image BOOLEAN,
   has_video BOOLEAN,
   date_resolved DATE,
+  unread BOOLEAN DEFAULT TRUE,
+  tags VARCHAR(225) ARRAY,
   CONSTRAINT pk_item PRIMARY KEY (id),
   CONSTRAINT fk_item_user FOREIGN KEY (user_id) REFERENCES users (id)
 );

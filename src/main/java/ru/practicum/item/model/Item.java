@@ -1,6 +1,5 @@
 package ru.practicum.item.model;
 
-import com.github.javafaker.Bool;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +13,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column()
+    @Column(name = "user_id")
     private Long userId;
 
     @Column()
@@ -37,4 +36,10 @@ public class Item {
 
     @Column(name = "date_resolved")
     private LocalDate dateResolved;
+
+    @Column
+    private Boolean unread = true;
+
+    @Column(name = "tags", columnDefinition = "text[]")
+    private String[] tags;
 }

@@ -26,8 +26,30 @@ public class ItemControllerTest {
                         .header("X-Later-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].url").value("https://example.com/item1"))
-                .andExpect(jsonPath("$[1].url").value("https://example.com/item2"));
+                .andExpect(jsonPath("$[0].url").value("https://example.com/item2"))
+                .andExpect(jsonPath("$[1].url").value("https://example.com/item1"));
+    }
+
+    @Test
+    public void shouldReturnItemsSortedByTitle() throws Exception {
+        mockMvc.perform(get("/items")
+                        .header("X-Later-User-Id", 1L)
+                        .param("sort", "TITLE"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title").value("Item 1"))
+                .andExpect(jsonPath("$[1].title").value("Item 2"));
+    }
+
+    @Test
+    public void shouldReturnItemsSortedByNewest() throws Exception {
+        mockMvc.perform(get("/items")
+                        .header("X-Later-User-Id", 1L)
+                        .param("sort", "NEWEST"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title").value("Item 2"))
+                .andExpect(jsonPath("$[1].title").value("Item 1"));
     }
 
     @Test
