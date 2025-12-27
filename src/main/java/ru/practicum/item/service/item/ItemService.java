@@ -1,4 +1,4 @@
-package ru.practicum.item.service;
+package ru.practicum.item.service.item;
 
 import ru.practicum.item.model.Item;
 

@@ -3,7 +3,7 @@ package ru.practicum.item.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.item.model.Item;
-import ru.practicum.item.service.ItemService;
+import ru.practicum.item.service.item.ItemService;
 
 import java.util.List;
 
