@@ -53,7 +53,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void shouldAddNewItem() throws Exception {
+    public void shouldCreateItem() throws Exception {
         String itemJson = "{\"url\": \"https://example.com/newitem\"}";
         mockMvc.perform(post("/items")
                         .header("X-Later-User-Id", 2L)
@@ -68,11 +68,57 @@ public class ItemControllerTest {
     public void shouldDeleteItem() throws Exception {
         mockMvc.perform(delete("/items/3")
                         .header("X-Later-User-Id", 2L))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/items")
                         .header("X-Later-User-Id", 2L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldUpdateItem() throws Exception {
+        String updateJson = "{\"id\": 1, \"unread\": false, \"tags\": [\"tag1\", \"tag2\"]}";
+        mockMvc.perform(patch("/items")
+                        .header("X-Later-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.unread").value(false))
+                .andExpect(jsonPath("$.tags", hasSize(2)))
+                .andExpect(jsonPath("$.tags[0]").value("tag1"))
+                .andExpect(jsonPath("$.tags[1]").value("tag2"));
+    }
+
+    @Test
+    public void shouldUpdateItemWithReplaceTags() throws Exception {
+        // First add some tags
+        String updateJson1 = "{\"id\": 1, \"tags\": [\"tag1\", \"tag2\"]}";
+        mockMvc.perform(patch("/items")
+                        .header("X-Later-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson1))
+                .andExpect(status().isOk());
+
+        // Now replace them
+        String updateJson2 = "{\"id\": 1, \"replaceTags\": true, \"tags\": [\"newtag\"]}";
+        mockMvc.perform(patch("/items")
+                        .header("X-Later-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson2))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tags", hasSize(1)))
+                .andExpect(jsonPath("$.tags[0]").value("newtag"));
+    }
+
+    @Test
+    public void shouldReturn404WhenUpdatingItemOfAnotherUser() throws Exception {
+        String updateJson = "{\"id\": 3, \"unread\": false}";
+        mockMvc.perform(patch("/items")
+                        .header("X-Later-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateJson))
+                .andExpect(status().isNotFound());
     }
 }

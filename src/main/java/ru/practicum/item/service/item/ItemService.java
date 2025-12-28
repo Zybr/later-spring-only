@@ -1,14 +1,17 @@
 package ru.practicum.item.service.item;
 
 import ru.practicum.item.dto.reqeust.list.ItemListRequest;
+import ru.practicum.item.dto.reqeust.update.ItemUpdateDto;
 import ru.practicum.item.model.Item;
 
 import java.util.List;
 
 public interface ItemService {
-    public List<Item> getItems(ItemListRequest request);
+    List<Item> findItems(ItemListRequest request);
 
-    public Item addNewItem(long userId, Item item);
+    Item createItem(long userId, Item creation);
 
-    public void deleteItem(long userId, long itemId);
+    Item updateItem(long userId, ItemUpdateDto update);
+
+    void deleteItem(long userId, long itemId);
 }

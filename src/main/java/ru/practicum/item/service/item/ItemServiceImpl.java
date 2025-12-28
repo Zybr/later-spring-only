@@ -3,15 +3,17 @@ package ru.practicum.item.service.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exception.http.NotFoundException;
+import ru.practicum.exception.http.NotFoundUserItemException;
 import ru.practicum.item.dto.reqeust.list.ItemListRequest;
+import ru.practicum.item.dto.reqeust.update.ItemUpdateDto;
 import ru.practicum.item.model.Item;
 import ru.practicum.item.repository.ItemRepository;
-
 import ru.practicum.item.service.item.querybuilder.QueryBuilder;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
     private final QueryBuilder queryBuilder;
 
     @Override
-    public List<Item> getItems(ItemListRequest request) {
+    public List<Item> findItems(ItemListRequest request) {
         return queryBuilder
                 .setUserId(request.getUserId())
                 .setState(request.getState())
@@ -34,21 +36,60 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public Item addNewItem(long userId, Item item) {
-        item.setUserId(userId);
-        return repository.save(item);
+    public Item createItem(long userId, Item creation) {
+        creation.setUserId(userId);
+        return repository.save(creation);
+    }
+
+    @Override
+    public Item updateItem(long userId, ItemUpdateDto update) {
+        // Get updating Item
+        Item item = repository
+                .findOneByUserIdAndId(userId, update.getId())
+                .orElseThrow(
+                        () -> new NotFoundUserItemException(
+                                userId,
+                                update.getId()
+                        )
+                );
+
+        // Update "Unread" attribute
+        if (update.getUnread() != null) {
+            item.setUnread(update.getUnread());
+        }
+
+        // Define passing Tags
+        boolean replaceTags = update.getReplaceTags() != null ? update.getReplaceTags() : false;
+        String[] updateTags = update.getTags() != null ? update.getTags() : new String[0];
+
+        // Define existed Tags
+        String[] itemTags = item.getTags();
+        Set<String> tags = replaceTags
+                ? new HashSet<>()
+                : new HashSet<>(itemTags == null ? List.of() : Arrays.asList(itemTags));
+
+        // Define result Tags
+        tags.addAll(Arrays.asList(updateTags));
+        item.setTags(tags.toArray(new String[0]));
+
+        return repository.saveAndFlush(item);
     }
 
     @Override
     @Transactional
     public void deleteItem(long userId, long itemId) {
-        Item item = repository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item not found"));
-
-        if (item.getUserId() != userId) {
-            throw new NotFoundException("Item does not belong to user");
-        }
-
-        repository.deleteById(itemId);
+        repository.deleteById(
+                repository.findOneByUserIdAndId( // Check existence
+                                userId,
+                                itemId
+                        )
+                        .orElseThrow(
+                                () -> new NotFoundUserItemException(
+                                        userId,
+                                        itemId
+                                )
+                        )
+                        .getId()
+        );
     }
 }

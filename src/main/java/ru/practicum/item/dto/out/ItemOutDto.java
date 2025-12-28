@@ -18,4 +18,5 @@ public class ItemOutDto {
     private final Boolean hasVideo;
     private final LocalDate dateResolved;
     private final Boolean unread;
+    private final String[] tags;
 }
